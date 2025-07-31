@@ -1,9 +1,9 @@
 # Indonesian License Plate Recognition — UAS Computer Vision
 
-**Proyek UAS — OCR Plat Nomor**  
+**UAS — OCR Plat Nomor Kendaraan**  
 **Integrasi Visual Language Model (VLM) dan Python untuk Inferensi Teks Otomatis**
 
-🎓 **Proyek Ujian Akhir Semester UAS Computer Vision oleh Zain Daffa**  
+🎓 **UAS Computer Vision Muhammad Zainul Daffa (4222201049)**  
 🤖 **Menggunakan LM Studio & Model BakLLaVA untuk mengenali plat nomor kendaraan**  
 📊 **Evaluasi dengan Character Error Rate (CER) secara otomatis**
 
@@ -118,6 +118,30 @@ Program akan menampilkan summary hasil evaluasi:
 * **Accuracy**: Persentase prediksi yang benar 100%
 * **Error Analysis**: Detail substitusi, deletion, dan insertion
 
+**Contoh output summary:**
+```
+----------------------------------------
+Results saved to ocr_results.csv
+============================================================
+SUMMARY RESULTS
+============================================================
+Total Images Processed: 197
+Images with Ground Truth: 197
+Average CER: 1.3165
+Accuracy (Exact Match): 0.0711 (7.11%)
+Correct Predictions: 14/197
+Total Substitutions: 784
+Total Deletions: 90
+Total Insertions: 930
+============================================================
+```
+
+**📊 Interpretasi Hasil:**
+* **CER = 1.3165**: Rata-rata error 131.65% dari panjang ground truth (tinggi)
+* **Accuracy = 7.11%**: Hanya 14 dari 197 gambar yang diprediksi dengan tepat 100%
+* **Error Types**: Substitusi (784) > Insertion (930) > Deletion (90)
+* **Kesimpulan**: Model perlu fine-tuning atau preprocessing tambahan
+
 ### 🧮 Formula CER (Character Error Rate)
 ```
 CER = (Substitutions + Deletions + Insertions) / Total_Characters_in_Ground_Truth
@@ -163,27 +187,3 @@ import numpy as np
 import difflib
 ```
 
-**Install dependencies:**
-```bash
-pip install pillow opencv-python numpy requests
-```
-
----
-
-## 🚨 Troubleshooting
-
-**Jika mengalami error:**
-1. **LM Studio tidak berjalan**: Pastikan server LM Studio aktif di `localhost:1234`
-2. **Model tidak ter-load**: Cek apakah model sudah di-load dengan benar di LM Studio
-3. **Path dataset salah**: Periksa kembali path folder `test/`
-4. **Format ground truth**: Pastikan file CSV memiliki kolom `image` dan `ground_truth`
-
----
-
-## 📧 Kontak
-**Nama**: Zain Daffa  
-**Mata Kuliah**: Computer Vision - UAS RE604  
-**Repository**: [UAS-RE604-COMPUTER-VISION](https://github.com/Zain-Daffa/UAS-RE604-COMPUTER-VISION)
-
----
-*Dibuat untuk keperluan Ujian Akhir Semester Computer Vision* 🎓
