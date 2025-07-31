@@ -22,13 +22,15 @@ Evaluasi hasil prediksi dilakukan dengan menghitung **Character Error Rate (CER)
 ```
 UAS-RE604-COMPUTER-VISION/
 ├── test/
-│   ├── image/           # 📸 Gambar plat nomor (.jpg, .png)
-│   ├── label/           # 📝 Label ground truth (.txt)
-│   └── ground_truth.csv # 📄 Data hasil penggabungan dari .txt dan jpg
+│   ├── *.jpg                # 📸 Gambar plat nomor
+│   ├── *.txt                # 📝 Label YOLO format (class_id x_center y_center width height)
+│   ├── classes.txt          # 🏷️ Mapping ID kelas ke karakter
+│   └── ground_truth.csv     # 📄 Data hasil konversi dari .txt (auto-generated)
 │
-├── main.py              # 🚀 Script utama untuk inferensi dan evaluasi VLM
-├── ocr_results.csv      # 📊 Hasil akhir: image, ground_truth, prediction, CER_score
-└── README.md            # 📖 Dokumentasi proyek
+├── generate_ground_truth_csv.py  # 🔄 Script untuk konversi .txt ke CSV
+├── main.py                       # 🚀 Script utama untuk inferensi dan evaluasi VLM
+├── ocr_results.csv              # 📊 Hasil akhir: image, ground_truth, prediction, CER_score
+└── README.md                    # 📖 Dokumentasi proyek
 ```
 
 ---
@@ -37,11 +39,32 @@ UAS-RE604-COMPUTER-VISION/
 
 ### 🧾 1. Persiapan Dataset
 * Siapkan folder `test` yang berisi:
-  * `image/` → gambar plat nomor (.jpg, .png, .bmp)
-  * `label/` → label plat nomor dalam format `.txt` (opsional)
-* Jika memiliki file `ground_truth.csv`, letakkan di dalam folder `test/`
+  * Gambar plat nomor (.jpg, .png, .bmp)
+  * Label plat nomor dalam format `.txt` dengan format YOLO
+* **Format file .txt**: Setiap baris berisi `class_id x_center y_center width height`
+* **File `classes.txt`**: Berisi mapping ID kelas ke karakter (0-9, A-Z)
 
-### 🤖 2. Setup LM Studio
+### 🔄 2. Generate Ground Truth CSV
+**PENTING**: Sebelum menjalankan `main.py`, jalankan terlebih dahulu script untuk mengkonversi label `.txt` menjadi `ground_truth.csv`:
+
+```bash
+python generate_ground_truth_csv.py
+```
+
+**✅ Fungsi script:**
+* Membaca semua file `.txt` di folder dataset
+* Mengkonversi ID kelas menjadi karakter menggunakan label mapping
+* Mengurutkan karakter berdasarkan posisi x_center (kiri ke kanan)
+* Menggabungkan karakter menjadi string plat nomor lengkap
+* Menyimpan hasil ke `ground_truth.csv`
+
+**Konfigurasi di `generate_ground_truth_csv.py`:**
+```python
+# Sesuaikan path dataset Anda
+dataset_folder = r"C:\Users\ASUS_TUF_GAMING\Documents\Dataset\test"
+```
+
+### 🤖 3. Setup LM Studio
 Pastikan **LM Studio** telah terinstall dan model **BakLLaVA** telah di-load:
 
 1. Buka **LM Studio**
@@ -49,7 +72,7 @@ Pastikan **LM Studio** telah terinstall dan model **BakLLaVA** telah di-load:
 3. Jalankan server lokal
 4. 📡 Server akan berjalan di: `http://localhost:1234`
 
-### ⚙️ 3. Konfigurasi Script
+### ⚙️ 4. Konfigurasi Script
 Edit bagian konfigurasi di `main.py` sesuai dengan setup Anda:
 
 ```python
@@ -60,7 +83,7 @@ ground_truth_file = os.path.join(image_dir, "ground_truth.csv")
 model_name = "bakllava1-mistralllava-7b"  # Sesuaikan nama model
 ```
 
-### ▶️ 4. Jalankan Program Utama
+### ▶️ 5. Jalankan Program Utama
 Untuk menjalankan inferensi dan evaluasi otomatis:
 
 ```bash
